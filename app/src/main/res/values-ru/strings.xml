@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Дни Рождения</string>
+    <string name="action_settings">Настройки</string>
+    <string name="notifications">Оповещения</string>
+    <string name="start_notification_service">Включить оповещения</string>
+    <string name="stop_notification_service">Выключить оповещения</string>
+    <string name="title_activity_contact">Контакт</string>
+    <string name="today_is">Сегодня</string>
+    <string name="today_format">dd MMMM yyyy</string>
+    <string name="birthday">День рождения</string>
+    <string name="today">сегодня</string>
+    <string name="tomorrow">завтра</string>
+    <string name="in_2_days">через 2 дня</string>
+    <string name="in_3_days">через 3 дня</string>
+    <string name="notification_title">Статус</string>
+    <string name="phones">Телефоны</string>
+    <string name="email">Эл. почта</string>
+
+</resources>

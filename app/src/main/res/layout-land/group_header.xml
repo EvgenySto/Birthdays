@@ -7,11 +7,11 @@
     <TextView android:id="@+id/groupTitle" 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" 
-		android:textColor="#0000ff" 
+		android:textColor="@color/darkBlue"
         android:padding="5dp" />
     
 	<View android:layout_width="fill_parent" 
 	    android:layout_height="2dp" 
-	    android:background="#0000ff" />
+	    android:background="@color/darkBlue" />
    
 </LinearLayout>

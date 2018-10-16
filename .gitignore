@@ -1,8 +1,10 @@
+*.apk
 .gradle/
 .idea/
 app/app.iml
 app/build.gradle
 app/build/
+build/
 Birthdays.iml
 build.gradle
 gradle/

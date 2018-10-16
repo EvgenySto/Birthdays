@@ -1,8 +1,5 @@
 package sto.evgeny.birthdays;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -16,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContactActivity extends Activity {
 
@@ -40,7 +39,7 @@ public class ContactActivity extends Activity {
 		
 		detailed = (ListView)findViewById(R.id.detailedInfo);
 		
-		elemList = new ArrayList<ListElement>();
+		elemList = new ArrayList<>();
 		
 		baseAdapter = new BaseAdapter() {
 			@Override
@@ -102,20 +101,22 @@ public class ContactActivity extends Activity {
 	public class GetPhonesTask extends AsyncTask<String, Void, List<ListElement>> {
 		@Override
 		protected List<ListElement> doInBackground(String... params) {
-			Cursor cursor = getContentResolver().query(Data.CONTENT_URI, 
+			Cursor cursor = getContentResolver().query(Data.CONTENT_URI,
 					new String[] {Data._ID, Data.CONTACT_ID, CommonDataKinds.Phone.NUMBER}, 
 					Data.MIMETYPE + " = '" + CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "' AND " +
 					Data.CONTACT_ID + " = ? ", new String[] {params[0]}, null);
-			List<ListElement> res = new ArrayList<ListElement>();
-			if(cursor.moveToFirst()) {
-				res.add(new ListElement("Телефоны:", true));
-				while(!cursor.isAfterLast()) {
-					String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
-					res.add(new ListElement(number, false));
-					cursor.moveToNext();
-				}
-			}
-			cursor.close();
+			List<ListElement> res = new ArrayList<>();
+			if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    res.add(new ListElement(getResources().getString(R.string.phones) + ":", true));
+                    while (!cursor.isAfterLast()) {
+                        String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
+                        res.add(new ListElement(number, false));
+                        cursor.moveToNext();
+                    }
+                }
+                cursor.close();
+            }
 			phonesReady = true;
 			return res;
 		}
@@ -123,8 +124,8 @@ public class ContactActivity extends Activity {
 		protected void onPostExecute(List<ListElement> result) {
 			elemList.addAll(result);
 			baseAdapter.notifyDataSetChanged();
-			if(phonesReady && emailsReady) {
-				((ProgressBar)ContactActivity.this.findViewById(R.id.progressBarCircle)).setVisibility(View.GONE);
+			if (phonesReady && emailsReady) {
+				ContactActivity.this.findViewById(R.id.progressBarCircle).setVisibility(View.GONE);
 			}
 		}
 	}
@@ -136,16 +137,18 @@ public class ContactActivity extends Activity {
 					new String[] {Data._ID, Data.CONTACT_ID, CommonDataKinds.Email.ADDRESS}, 
 					Data.MIMETYPE + " = '" + CommonDataKinds.Email.CONTENT_ITEM_TYPE + "' AND " +
 					Data.CONTACT_ID + " = ? ", new String[] {params[0]}, null);
-			List<ListElement> res = new ArrayList<ListElement>();
-			if(cursor.moveToFirst()) {
-				res.add(new ListElement("Эл. почта:", true));
-				while(!cursor.isAfterLast()) {
-					String email = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Email.ADDRESS));
-					res.add(new ListElement(email, false));
-					cursor.moveToNext();
-				}
-			}
-			cursor.close();
+			List<ListElement> res = new ArrayList<>();
+			if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    res.add(new ListElement(getResources().getString(R.string.email) + ":", true));
+                    while (!cursor.isAfterLast()) {
+                        String email = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Email.ADDRESS));
+                        res.add(new ListElement(email, false));
+                        cursor.moveToNext();
+                    }
+                }
+                cursor.close();
+            }
 			emailsReady = true;
 			return res;
 		}
@@ -154,7 +157,7 @@ public class ContactActivity extends Activity {
 			elemList.addAll(result);
 			baseAdapter.notifyDataSetChanged();
 			if(phonesReady && emailsReady) {
-				((ProgressBar)ContactActivity.this.findViewById(R.id.progressBarCircle)).setVisibility(View.GONE);
+				ContactActivity.this.findViewById(R.id.progressBarCircle).setVisibility(View.GONE);
 			}
 		}
 	}
