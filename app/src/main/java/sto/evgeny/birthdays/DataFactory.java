@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sto.evgeny.birthdays.model.ContactData;
+
 public class DataFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context;
     private Intent intent;
@@ -21,24 +23,19 @@ public class DataFactory implements RemoteViewsService.RemoteViewsFactory {
     }
     @Override
     public void onCreate() {
-        data = new ArrayList<Map<String, String>>();
+        data = new ArrayList<>();
     }
 
     @Override
     public void onDataSetChanged() {
         data.clear();
-        Map<String, String> item0 = new HashMap<String, String>();
-        item0.put("name", "Кто-то");
-        item0.put("birthday", "Когда-то");
-        data.add(item0);
-        item0 = new HashMap<String, String>();
-        item0.put("name", "Ещё кто-то");
-        item0.put("birthday", "Позже");
-        data.add(item0);
-        item0 = new HashMap<String, String>();
-        item0.put("name", "И ещё кто-то");
-        item0.put("birthday", "Много позже");
-        data.add(item0);
+
+        for (ContactData contactData : ContactDataProvider.getData(context).subList(0, 3)) {
+            Map<String, String> item = new HashMap<>();
+            item.put("name", contactData.getName());
+            item.put("birthday", contactData.getDisplayDate());
+            data.add(item);
+        }
     }
 
     @Override
