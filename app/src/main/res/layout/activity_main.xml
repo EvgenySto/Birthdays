@@ -6,7 +6,12 @@
     android:orientation="vertical"
     tools:context="sto.evgeny.birthdays.MainActivity"
     tools:ignore="MergeRootFrame" >
-    
+
+    <View
+        android:background="@color/green"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
     <TextView android:id="@+id/currentDateText" 
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
@@ -15,8 +20,13 @@
         android:gravity="center" 
         android:textStyle="bold|italic"
         android:textSize="20sp"
-        android:textColor="@color/darkBlue"
+        android:textColor="@color/green"
         android:background="@color/lightBlue"/>
+
+    <View
+        android:background="@color/green"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
     
     <ListView android:id="@+id/contactsListViewShort"
         android:layout_width="match_parent"

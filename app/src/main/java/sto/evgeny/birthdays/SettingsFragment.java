@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,9 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_settings, container);
         final ImageButton imageButton = (ImageButton) view.findViewById(R.id.notificationsButton);
+        final TextView label = (TextView) view.findViewById(R.id.notificationsLabel);
+        final int green = ContextCompat.getColor(getActivity(), R.color.green);
+        final int red = ContextCompat.getColor(getActivity(), R.color.red);
         checkStatusThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -40,6 +44,7 @@ public class SettingsFragment extends Fragment {
                         public void run() {
                             imageButton.setBackground(getResources().getDrawable(
                                     intent != null ? R.drawable.circle_green : R.drawable.circle_red, null));
+                            label.setTextColor(intent != null ? green : red);
                             notificationsActive = intent != null;
                         }
                     });
@@ -64,8 +69,7 @@ public class SettingsFragment extends Fragment {
                 }
             }
         };
-        view.findViewById(R.id.notificationsLabel).setOnClickListener(onClickListener);
-        imageButton.setOnClickListener(onClickListener);
+        view.findViewById(R.id.notificationsWrapper).setOnClickListener(onClickListener);
         return view;
     }
 
@@ -79,7 +83,7 @@ public class SettingsFragment extends Fragment {
         PendingIntent intent = PendingIntent.getService(getActivity(), 12345,
                 new Intent(getActivity(), BackgroundService.class), PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
+        if (alarmManager != null && intent != null) {
             alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), 5000, intent);
         }
     }
@@ -88,7 +92,7 @@ public class SettingsFragment extends Fragment {
         PendingIntent intent = PendingIntent.getService(getActivity(), 12345,
                 new Intent(getActivity(), BackgroundService.class), PendingIntent.FLAG_NO_CREATE);
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager != null) {
+        if (alarmManager != null && intent != null) {
             alarmManager.cancel(intent);
         }
         if (intent != null) {
