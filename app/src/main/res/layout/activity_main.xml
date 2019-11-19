@@ -13,7 +13,7 @@
         android:layout_height="1dp"/>
 
     <TextView android:id="@+id/currentDateText" 
-        android:layout_width="fill_parent" 
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"

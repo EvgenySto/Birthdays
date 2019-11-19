@@ -12,16 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 
-    <TextView android:id="@+id/currentDateText" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:gravity="center" 
-        android:textStyle="bold|italic"
-        android:textSize="18sp"
-        android:textColor="@color/green"
-        android:background="@color/lightBlue"/>
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView android:id="@+id/currentDateText"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center"
+            android:textStyle="bold|italic"
+            android:textSize="20sp"
+            android:textColor="@color/green"
+            android:background="@color/lightBlue"/>
+
+        <fragment android:name="sto.evgeny.birthdays.SettingsFragment"
+            android:id="@+id/settingsFragment"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <View
         android:background="@color/green"
