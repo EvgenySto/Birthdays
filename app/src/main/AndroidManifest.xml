@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="sto.evgeny.birthdays"
-    android:versionCode="1"
-    android:versionName="1.0">
-
-    <!--<uses-sdk-->
-        <!--android:minSdkVersion="21"-->
-        <!--android:targetSdkVersion="24" />-->
+    android:versionCode="2"
+    android:versionName="1.0.1">
 
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -46,6 +42,10 @@
         <activity
             android:name=".ContactActivity"
             android:label="@string/title_activity_contact"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".activity.AboutActivity"
             android:parentActivityName=".MainActivity"/>
 
         <service android:name=".service.BackgroundService" />
@@ -55,7 +55,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>

@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import sto.evgeny.birthdays.activity.AboutActivity;
 import sto.evgeny.birthdays.model.ContactData;
 
 public class MainActivity extends FragmentActivity {
@@ -106,8 +107,9 @@ public class MainActivity extends FragmentActivity {
             case R.id.action_settings:
 
                 break;
-            case R.id.notifications:
-
+            case R.id.action_about:
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;

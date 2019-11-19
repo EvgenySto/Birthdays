@@ -1,5 +1,6 @@
 package sto.evgeny.birthdays;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.PendingIntent;
@@ -29,25 +30,31 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_settings, container);
-        final ImageButton imageButton = (ImageButton) view.findViewById(R.id.notificationsButton);
-        final TextView label = (TextView) view.findViewById(R.id.notificationsLabel);
+        final ImageButton imageButton = view.findViewById(R.id.notificationsButton);
+        final TextView label = view.findViewById(R.id.notificationsLabel);
         final int green = ContextCompat.getColor(getActivity(), R.color.green);
         final int red = ContextCompat.getColor(getActivity(), R.color.red);
         checkStatusThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (!checkStatusThread.isInterrupted()) {
-                    final PendingIntent intent = PendingIntent.getService(SettingsFragment.this.getActivity(), 12345,
-                            new Intent(SettingsFragment.this.getActivity(), BackgroundService.class), PendingIntent.FLAG_NO_CREATE);
-                    SettingsFragment.this.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            imageButton.setBackground(getResources().getDrawable(
-                                    intent != null ? R.drawable.circle_green : R.drawable.circle_red, null));
-                            label.setTextColor(intent != null ? green : red);
-                            notificationsActive = intent != null;
-                        }
-                    });
+                    if (isAdded()) {
+                        Activity activity = SettingsFragment.this.getActivity();
+                        final PendingIntent intent = PendingIntent.getService(activity, 12345,
+                                new Intent(activity, BackgroundService.class), PendingIntent.FLAG_NO_CREATE);
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!isAdded()) {
+                                    return;
+                                }
+                                imageButton.setBackground(getResources().getDrawable(
+                                        intent != null ? R.drawable.circle_green : R.drawable.circle_red, null));
+                                label.setTextColor(intent != null ? green : red);
+                                notificationsActive = intent != null;
+                            }
+                        });
+                    }
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
