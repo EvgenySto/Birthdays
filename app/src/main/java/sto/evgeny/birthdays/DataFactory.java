@@ -32,6 +32,7 @@ public class DataFactory implements RemoteViewsService.RemoteViewsFactory {
 
         for (ContactData contactData : ContactDataProvider.getData(context).subList(0, 3)) {
             Map<String, String> item = new HashMap<>();
+            item.put("id", contactData.getId());
             item.put("name", contactData.getName());
             item.put("birthday", contactData.getDisplayDate());
             data.add(item);
@@ -54,6 +55,10 @@ public class DataFactory implements RemoteViewsService.RemoteViewsFactory {
         Map<String, String> item = data.get(position);
         remoteViews.setTextViewText(R.id.widgetItem_name, item.get("name"));
         remoteViews.setTextViewText(R.id.widgetItem_birthday, item.get("birthday"));
+        Intent fillInIntent = new Intent();
+        fillInIntent.putExtra(ExtraKey.CONTACT_ID.name(), Long.parseLong(item.get("id")));
+        fillInIntent.putExtra(ExtraKey.CONTACT_NAME.name(), item.get("name"));
+        remoteViews.setOnClickFillInIntent(R.id.widgetItem, fillInIntent);
         return remoteViews;
     }
 
