@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import sto.evgeny.birthdays.activity.MainActivity;
+
 public class BirthdaysWidgetProvider extends AppWidgetProvider {
 
 	@Override

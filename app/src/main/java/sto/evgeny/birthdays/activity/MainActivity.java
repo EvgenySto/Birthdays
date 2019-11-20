@@ -1,4 +1,4 @@
-package sto.evgeny.birthdays;
+package sto.evgeny.birthdays.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,10 +22,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import sto.evgeny.birthdays.activity.AboutActivity;
+import sto.evgeny.birthdays.ContactDataProvider;
+import sto.evgeny.birthdays.ExtraKey;
+import sto.evgeny.birthdays.R;
 import sto.evgeny.birthdays.model.ContactData;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
@@ -104,9 +106,6 @@ public class MainActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_settings:
-
-                break;
             case R.id.action_about:
                 Intent intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);

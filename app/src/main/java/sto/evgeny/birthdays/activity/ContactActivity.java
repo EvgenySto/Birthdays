@@ -1,11 +1,11 @@
-package sto.evgeny.birthdays;
+package sto.evgeny.birthdays.activity;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Data;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +18,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactActivity extends Activity {
+import sto.evgeny.birthdays.ExtraKey;
+import sto.evgeny.birthdays.ListElement;
+import sto.evgeny.birthdays.R;
+
+public class ContactActivity extends AppCompatActivity {
 
 	private long cId;
 	private List<ListElement> elemList;
@@ -37,7 +41,7 @@ public class ContactActivity extends Activity {
 		
 		((TextView)findViewById(R.id.contactNameText)).setText(cName);
 		
-		detailed = (ListView)findViewById(R.id.detailedInfo);
+		detailed = findViewById(R.id.detailedInfo);
 		
 		elemList = new ArrayList<>();
 		

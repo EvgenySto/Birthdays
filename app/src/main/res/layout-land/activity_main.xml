@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
     android:orientation="vertical"
-    tools:context="sto.evgeny.birthdays.MainActivity"
+    tools:context="sto.evgeny.birthdays.activity.MainActivity"
     tools:ignore="MergeRootFrame" >
 
     <View

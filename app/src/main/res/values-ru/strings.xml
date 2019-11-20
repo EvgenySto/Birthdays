@@ -2,12 +2,11 @@
 <resources>
 
     <string name="app_name">Дни Рождения</string>
-    <string name="action_settings">Настройки</string>
-    <string name="action_about">О приложении</string>
+    <string name="about">О приложении</string>
     <string name="notifications">Оповещения</string>
     <string name="start_notification_service">Включить оповещения</string>
     <string name="stop_notification_service">Выключить оповещения</string>
-    <string name="title_activity_contact">Контакт</string>
+    <string name="contact">Контакт</string>
     <string name="today_is">Сегодня</string>
     <string name="today_format">dd MMMM yyyy</string>
     <string name="birthday">День рождения</string>
@@ -19,5 +18,7 @@
     <string name="phones">Телефоны</string>
     <string name="email">Эл. почта</string>
     <string name="app_version">Версия приложения: %1$s</string>
+    <string name="app_sdk_versions">Уровни API: мин. %1$s, целевой %2$s</string>
+    <string name="app_current_sdk">(текущий %1$d, Android %2$s)</string>
 
 </resources>
