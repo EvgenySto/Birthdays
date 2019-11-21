@@ -5,19 +5,15 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import sto.evgeny.birthdays.model.ContactData;
+import sto.evgeny.birthdays.model.DateFormat;
 
 public class ContactDataProvider {
-
-    private static final SimpleDateFormat DEFAULT_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    private static final SimpleDateFormat NO_YEAR_FORMAT = new SimpleDateFormat("--MM-dd", Locale.getDefault());
 
     public static List<ContactData> getData(Context context) {
         Cursor contactsCursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
@@ -63,24 +59,20 @@ public class ContactDataProvider {
             String dateStr = dataCursor.getString(dataCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
             Date date = null;
             boolean hasYear = false;
-            if (dateStr.startsWith("--")) {
+            for (DateFormat dateFormat : DateFormat.values()) {
                 try {
-                    date = NO_YEAR_FORMAT.parse(dateStr);
+                    date = dateFormat.getFormat().parse(dateStr);
+                    hasYear = dateFormat.hasYear();
+                    break;
                 } catch (ParseException e) {
-                    System.out.println(String.format("[WARN] Ignore unknown date format: date '%s', contact '%s'",
-                            dateStr, name));
-                }
-            } else {
-                try {
-                    date = DEFAULT_FORMAT.parse(dateStr);
-                    hasYear = true;
-                } catch (ParseException e) {
-                    System.out.println(String.format("[WARN] Ignore unknown date format: date '%s', contact '%s'",
-                            dateStr, name));
+                    // ignore: try next format
                 }
             }
             if (date != null) {
                 data.add(new ContactData(id, name, date, hasYear));
+            } else {
+                System.out.printf("\n[WARN] Unknown date format: date '%s', contact '%s'",
+                        dateStr, name);
             }
             dataCursor.moveToNext();
         }

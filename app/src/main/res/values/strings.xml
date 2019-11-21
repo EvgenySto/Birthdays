@@ -21,6 +21,8 @@
     <string name="app_sdk_versions">API Levels: min %1$s, target %2$s</string>
     <string name="app_current_sdk">(current %1$d, Android %2$s)</string>
 
+    <color name="gray">#575555</color>
+    <color name="lightGray">#DFE4E6</color>
     <color name="blue">#4747DD</color>
     <color name="darkBlue">#2b2b73</color>
     <color name="lightBlue">#C1E6F5</color>
