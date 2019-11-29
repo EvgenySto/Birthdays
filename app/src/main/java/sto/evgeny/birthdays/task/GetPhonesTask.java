@@ -10,7 +10,7 @@ import android.provider.ContactsContract;
 import java.util.ArrayList;
 import java.util.List;
 
-import sto.evgeny.birthdays.ListElement;
+import sto.evgeny.birthdays.model.ListElement;
 import sto.evgeny.birthdays.R;
 
 public class GetPhonesTask extends AsyncTask<String, Void, List<ListElement>> {
@@ -36,10 +36,10 @@ public class GetPhonesTask extends AsyncTask<String, Void, List<ListElement>> {
         List<ListElement> res = new ArrayList<>();
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                res.add(new ListElement(resources.getString(R.string.phones) + ":", true));
+                res.add(new ListElement(resources.getString(R.string.phones) + ":", ListElement.Type.GROUP_HEADER));
                 while (!cursor.isAfterLast()) {
                     String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    res.add(new ListElement(number, false));
+                    res.add(new ListElement(number, ListElement.Type.PHONE));
                     cursor.moveToNext();
                 }
             }

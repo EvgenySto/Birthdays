@@ -1,6 +1,8 @@
 package sto.evgeny.birthdays.activity;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sto.evgeny.birthdays.ExtraKey;
-import sto.evgeny.birthdays.ListElement;
+import sto.evgeny.birthdays.model.ListElement;
 import sto.evgeny.birthdays.R;
 import sto.evgeny.birthdays.task.Callback;
 import sto.evgeny.birthdays.task.GetEmailsTask;
@@ -26,6 +28,7 @@ public class ContactActivity extends AppCompatActivity {
     private List<ListElement> elemList;
     private RecyclerView.Adapter<ItemViewHolder> adapter;
     private int runningTasks;
+    private long lastClicked;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,40 +53,54 @@ public class ContactActivity extends AppCompatActivity {
 						R.layout.detail_item, parent, false);
 				view.setClickable(true);
 				view.setFocusable(true);
-				view.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(final View v) {
-						int fromColor = ContextCompat.getColor(ContactActivity.this, android.R.color.background_light);
-						int toColor = ContextCompat.getColor(ContactActivity.this, R.color.lightGray);
-						ValueAnimator animator = ValueAnimator.ofArgb(fromColor, toColor, fromColor);
-						animator.setDuration(250);
-						animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-							@Override
-							public void onAnimationUpdate(ValueAnimator animation) {
-								v.setBackgroundColor((int) animation.getAnimatedValue());
-								if (animation.getAnimatedFraction() == 1) {
-									// TODO: handle click
-								}
-							}
-						});
-						animator.start();
-					}
-				});
 				return new ItemViewHolder(view);
 			}
 
 			@Override
-			public void onBindViewHolder(ItemViewHolder holder, int position) {
+			public void onBindViewHolder(final ItemViewHolder holder, int position) {
 				TextView textView = holder.getView().findViewById(R.id.detailItemText);
 				View separator = holder.getView().findViewById(R.id.detailItemSeparator);
 				textView.setText(elemList.get(position).getText());
-				boolean isGroupHeader = elemList.get(position).isGroupHeader();
+				boolean isGroupHeader = elemList.get(position).getType() == ListElement.Type.GROUP_HEADER;
 				int textColor = ContextCompat.getColor(ContactActivity.this,
 						isGroupHeader ? R.color.green : R.color.gray);
 				int separatorColor = ContextCompat.getColor(ContactActivity.this,
 						isGroupHeader ? R.color.green : android.R.color.transparent);
 				textView.setTextColor(textColor);
 				separator.setBackgroundColor(separatorColor);
+
+				if (!holder.getView().hasOnClickListeners()) {
+                    holder.getView().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(final View v) {
+                            final long time = System.currentTimeMillis();
+                        	lastClicked = time;
+                            int fromColor = ContextCompat.getColor(ContactActivity.this, android.R.color.background_light);
+                            int toColor = ContextCompat.getColor(ContactActivity.this, R.color.lightGray);
+                            ValueAnimator animator = ValueAnimator.ofArgb(fromColor, toColor, fromColor);
+                            animator.setDuration(250);
+                            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator animation) {
+                                    v.setBackgroundColor((int) animation.getAnimatedValue());
+                                    if (animation.getAnimatedFraction() == 1 && lastClicked == time) {
+                                    	ListElement.Type type = elemList.get(holder.getAdapterPosition()).getType();
+                                        String action = type.getAction();
+                                        if (action == null) {
+                                        	return;
+										}
+										String prefix = type.getPrefix();
+										Intent intent = new Intent(action);
+                                        intent.setData(Uri.parse(prefix +
+												elemList.get(holder.getAdapterPosition()).getText()));
+                                        startActivity(intent);
+                                    }
+                                }
+                            });
+                            animator.start();
+                        }
+                    });
+                }
 			}
 
 			@Override

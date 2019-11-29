@@ -10,7 +10,7 @@ import android.provider.ContactsContract;
 import java.util.ArrayList;
 import java.util.List;
 
-import sto.evgeny.birthdays.ListElement;
+import sto.evgeny.birthdays.model.ListElement;
 import sto.evgeny.birthdays.R;
 
 public class GetEmailsTask extends AsyncTask<String, Void, List<ListElement>> {
@@ -37,10 +37,10 @@ public class GetEmailsTask extends AsyncTask<String, Void, List<ListElement>> {
         List<ListElement> res = new ArrayList<>();
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                res.add(new ListElement(resources.getString(R.string.email) + ":", true));
+                res.add(new ListElement(resources.getString(R.string.email) + ":", ListElement.Type.GROUP_HEADER));
                 while (!cursor.isAfterLast()) {
                     String email = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-                    res.add(new ListElement(email, false));
+                    res.add(new ListElement(email, ListElement.Type.EMAIL));
                     cursor.moveToNext();
                 }
             }
