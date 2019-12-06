@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView contactsListShort;
     private ListView contactsList;
 
+    private FirebaseAnalytics firebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             init();
         }
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, null);
     }
 
     private void init() {
