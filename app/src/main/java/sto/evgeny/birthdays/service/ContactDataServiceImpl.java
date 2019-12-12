@@ -1,31 +1,39 @@
-package sto.evgeny.birthdays;
+package sto.evgeny.birthdays.service;
 
-import android.content.Context;
+import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import sto.evgeny.birthdays.DateComparator;
 import sto.evgeny.birthdays.model.ContactData;
 import sto.evgeny.birthdays.model.DateFormat;
 
-public class ContactDataProvider {
+public class ContactDataServiceImpl implements ContactDataService {
 
-    public static List<ContactData> getData(Context context) {
-        Cursor contactsCursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
+    @Inject
+    public ContactDataServiceImpl() {
+    }
+
+    @Override
+    public List<ContactData> getData(ContentResolver contentResolver) {
+        List<ContactData> data = new ArrayList<>();
+        Cursor contactsCursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
                 new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY},
                 null, null, null);
 
         if (contactsCursor == null) {
-            return Collections.emptyList();
+            return data;
         }
         if (!contactsCursor.moveToFirst()) {
             contactsCursor.close();
-            return Collections.emptyList();
+            return data;
         }
 
         List<String> contactIds = new ArrayList<>();
@@ -37,7 +45,7 @@ public class ContactDataProvider {
         String[] idsArr = new String[contactIds.size()];
         contactIds.toArray(idsArr);
 
-        Cursor dataCursor = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+        Cursor dataCursor = contentResolver.query(ContactsContract.Data.CONTENT_URI,
                 new String[] {ContactsContract.Data._ID, ContactsContract.Data.CONTACT_ID, ContactsContract.Data.DISPLAY_NAME_PRIMARY, ContactsContract.CommonDataKinds.Event.START_DATE},
                 ContactsContract.Data.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE + "' AND " +
                         ContactsContract.CommonDataKinds.Event.TYPE + " = " + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY + " AND " +
@@ -45,34 +53,24 @@ public class ContactDataProvider {
                 null);
 
         if (dataCursor == null) {
-            return Collections.emptyList();
+            return data;
         }
         if (!dataCursor.moveToFirst()) {
             dataCursor.close();
-            return Collections.emptyList();
+            return data;
         }
 
-        List<ContactData> data = new ArrayList<>();
         while (!dataCursor.isAfterLast()) {
             String id = dataCursor.getString(dataCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID));
             String name = dataCursor.getString(dataCursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME_PRIMARY));
             String dateStr = dataCursor.getString(dataCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
-            Date date = null;
-            boolean hasYear = false;
+            String[] date;
             for (DateFormat dateFormat : DateFormat.values()) {
-                try {
-                    date = dateFormat.getFormat().parse(dateStr);
-                    hasYear = dateFormat.hasYear();
+                date = dateFormat.parse(dateStr);
+                if (date != null) {
+                    data.add(new ContactData(id, name, date));
                     break;
-                } catch (ParseException e) {
-                    // ignore: try next format
                 }
-            }
-            if (date != null) {
-                data.add(new ContactData(id, name, date, hasYear));
-            } else {
-                System.out.printf("\n[WARN] Unknown date format: date '%s', contact '%s'",
-                        dateStr, name);
             }
             dataCursor.moveToNext();
         }
@@ -83,7 +81,7 @@ public class ContactDataProvider {
         return data;
     }
 
-    private static String makeArgPlaceholders(int count) {
+    private String makeArgPlaceholders(int count) {
         String res = "";
         if (count > 0) {
             StringBuilder sb = new StringBuilder(res);
@@ -94,5 +92,4 @@ public class ContactDataProvider {
         }
         return res;
     }
-
 }

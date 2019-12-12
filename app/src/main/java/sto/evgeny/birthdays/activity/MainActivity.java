@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,10 +23,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import sto.evgeny.birthdays.ContactDataProvider;
+import javax.inject.Inject;
+
+import androidx.appcompat.app.AppCompatActivity;
 import sto.evgeny.birthdays.ExtraKey;
 import sto.evgeny.birthdays.R;
+import sto.evgeny.birthdays.application.ComponentHolder;
 import sto.evgeny.birthdays.model.ContactData;
+import sto.evgeny.birthdays.service.ContactDataService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,10 +43,15 @@ public class MainActivity extends AppCompatActivity {
     private ListView contactsListShort;
     private ListView contactsList;
 
+    @Inject
+    public ContactDataService contactDataService;
+
     private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((ComponentHolder) getApplicationContext()).getApplicationComponent().inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -54,20 +62,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, null);
+        firebaseAnalytics.logEvent("main_activity_create", null);
     }
 
     private void init() {
         SimpleDateFormat sdf = new SimpleDateFormat(
                 String.format("'%s' %s", getResources().getString(R.string.today_is),
                         getResources().getString(R.string.today_format)), Locale.getDefault());
-        ((TextView)findViewById(R.id.currentDateText)).setText(sdf.format(new Date()));
+        ((TextView) findViewById(R.id.currentDateText)).setText(sdf.format(new Date()));
 
-        String[] from = {ContactData.Key.NAME.value(), ContactData.Key.DATE_TO_DISPLAY.value()};
-        String[] fromShort = {ContactData.Key.NAME.value(), ContactData.Key.DATE_TO_DISPLAY_SHORT.value()};
+        String[] from = {ContactData.Key.NAME.name(), ContactData.Key.DATE_TO_DISPLAY.name()};
+        String[] fromShort = {ContactData.Key.NAME.name(), ContactData.Key.DATE_TO_DISPLAY_SHORT.name()};
         int[] to = {R.id.contactItem_name, R.id.contactItem_birthday};
 
-        List<ContactData> contactDataList = ContactDataProvider.getData(this);
+        List<ContactData> contactDataList = contactDataService.getData(getContentResolver());
         adapter = new SimpleAdapter(this, contactDataList, R.layout.contact_item, from, to);
         adapterShort = new SimpleAdapter(this, contactDataList, R.layout.contact_item, fromShort, to);
 
@@ -85,11 +93,11 @@ public class MainActivity extends AppCompatActivity {
         };
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            contactsListShort = (ListView) findViewById(R.id.contactsListViewShort);
+            contactsListShort = findViewById(R.id.contactsListViewShort);
             contactsListShort.setAdapter(adapterShort);
             contactsListShort.setOnItemClickListener(onItemClickListener);
         } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            contactsList = (ListView) findViewById(R.id.contactsListView);
+            contactsList = findViewById(R.id.contactsListView);
             contactsList.setAdapter(adapter);
             contactsList.setOnItemClickListener(onItemClickListener);
         }
@@ -98,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
     }
 

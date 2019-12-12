@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.core.app.NotificationCompat;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -16,14 +15,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import sto.evgeny.birthdays.ContactDataProvider;
+import javax.inject.Inject;
+
+import androidx.core.app.NotificationCompat;
 import sto.evgeny.birthdays.R;
+import sto.evgeny.birthdays.application.ComponentHolder;
 import sto.evgeny.birthdays.model.ContactData;
 
 /**
  * Created by Evgeny Stolbnikov on 22.08.2016.
  */
 public class BackgroundService extends IntentService {
+
+    @Inject
+    public ContactDataService contactDataService;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -39,6 +44,8 @@ public class BackgroundService extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        ((ComponentHolder) getApplicationContext()).getApplicationComponent().inject(this);
+
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
@@ -54,7 +61,7 @@ public class BackgroundService extends IntentService {
             return super.onStartCommand(intent, flags, startId);
         }
 
-        Iterator<ContactData> dataIterator = ContactDataProvider.getData(this).iterator();
+        Iterator<ContactData> dataIterator = contactDataService.getData(getContentResolver()).iterator();
         Map<Integer, List<String>> nearestMap = new HashMap<Integer, List<String>>(){{
             put(0, new ArrayList<String>());
             put(1, new ArrayList<String>());
@@ -64,10 +71,10 @@ public class BackgroundService extends IntentService {
 
         while (dataIterator.hasNext()) {
             ContactData nearest = dataIterator.next();
-            String mmDD = nearest.getMonthAndDay();
+            String mmdd = nearest.getMonthAndDay();
             String yyyy = ContactData.YEAR_FORMAT.format(now);
             try {
-                Date nearestDate = ContactData.MONTH_DAY_YEAR_FORMAT.parse(mmDD + "-" + yyyy);
+                Date nearestDate = ContactData.MONTH_DAY_YEAR_FORMAT.parse(mmdd + yyyy);
                 int interval = (int) Math.round((nearestDate.getTime() - now.getTime()) / (double)(1000 * 60 * 60 * 24));
                 if (nearestMap.containsKey(interval)) {
                     nearestMap.get(interval).add(nearest.getName());

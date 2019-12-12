@@ -1,69 +1,58 @@
 package sto.evgeny.birthdays.model;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
 public class ContactData extends HashMap<String, String> {
 
-    public static final SimpleDateFormat MONTH_DAY_FORMAT = new SimpleDateFormat("MM-dd", Locale.getDefault());
-    public static final SimpleDateFormat MONTH_DAY_YEAR_FORMAT = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+    public static final SimpleDateFormat MONTH_DAY_FORMAT = new SimpleDateFormat("MMdd", Locale.getDefault());
+    public static final SimpleDateFormat MONTH_DAY_YEAR_FORMAT = new SimpleDateFormat("MMddyyyy", Locale.getDefault());
     public static final SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy", Locale.getDefault());
-    public static final SimpleDateFormat DAY_MONTH_FORMAT = new SimpleDateFormat("dd MMMM", Locale.getDefault());
-    public static final SimpleDateFormat DAY_MONTH_YEAR_FORMAT = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
-    public static final SimpleDateFormat DAY_MONTH_FORMAT_SHORT = new SimpleDateFormat("dd.MM", Locale.getDefault());
-    public static final SimpleDateFormat DAY_MONTH_YEAR_FORMAT_SHORT = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
 
     public enum Key {
-        ID("ID"),
-        NAME("Name"),
-        MONTH_AND_DAY("MonthAndDay"),
-        DATE_TO_DISPLAY("DateToDisplay"),
-        DATE_TO_DISPLAY_SHORT("DateToDisplayShort"),
-        HAS_YEAR("HasYear");
-
-        private String value;
-        Key(String value) {
-            this.value = value;
-        }
-        public String value() {
-            return value;
-        }
+        ID,
+        NAME,
+        MONTH_AND_DAY,
+        DATE_TO_DISPLAY,
+        DATE_TO_DISPLAY_SHORT
     }
 
-    public ContactData(String id, String name, Date date, boolean hasYear) {
-        put(Key.ID.value(), id);
-        put(Key.NAME.value(), name);
-        put(Key.MONTH_AND_DAY.value(), MONTH_DAY_FORMAT.format(date));
-        put(Key.DATE_TO_DISPLAY.value(), getDisplayDate(date, hasYear, false));
-        put(Key.DATE_TO_DISPLAY_SHORT.value(), getDisplayDate(date, hasYear, true));
-        put(Key.HAS_YEAR.value(), String.valueOf(hasYear));
+    public ContactData(String id, String name, String[] date) {
+        put(Key.ID.name(), id);
+        put(Key.NAME.name(), name);
+        put(Key.MONTH_AND_DAY.name(), date[1]);
+        String year = date[0], month = date[1].substring(0, 2), day = date[1].substring(2);
+        put(Key.DATE_TO_DISPLAY.name(), getDisplayDate(year, month, day, false));
+        put(Key.DATE_TO_DISPLAY_SHORT.name(), getDisplayDate(year, month, day, true));
     }
 
     public String getId() {
-        return get(Key.ID.value());
+        return get(Key.ID.name());
     }
     public String getName() {
-        return get(Key.NAME.value());
+        return get(Key.NAME.name());
     }
     public String getMonthAndDay() {
-        return get(Key.MONTH_AND_DAY.value());
+        return get(Key.MONTH_AND_DAY.name());
     }
     public String getDisplayDate() {
-        return get(Key.DATE_TO_DISPLAY.value());
-    }
-    public boolean hasYear() {
-        return Boolean.parseBoolean(get(Key.HAS_YEAR.value()));
+        return get(Key.DATE_TO_DISPLAY.name());
     }
 
-    private static String getDisplayDate(Date date, boolean hasYear, boolean isShort) {
-        if (hasYear) {
-            String year = YEAR_FORMAT.format(date);
-            if (!year.startsWith("0")) {
-                return isShort ? DAY_MONTH_YEAR_FORMAT_SHORT.format(date) : DAY_MONTH_YEAR_FORMAT.format(date);
-            }
+    public String getDisplayDateShort() {
+        return get(Key.DATE_TO_DISPLAY_SHORT.name());
+    }
+
+    private static String getDisplayDate(String year, String month, String day, boolean isShort) {
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String monthLong = dfs.getMonths()[Integer.parseInt(month) - 1];
+        if (year != null && !year.startsWith("0")) {
+            return isShort ? String.format("%s.%s.%s", day, month, year) :
+                    String.format("%s %s %s", day, monthLong, year);
         }
-        return isShort ? DAY_MONTH_FORMAT_SHORT.format(date) : DAY_MONTH_FORMAT.format(date);
+        return isShort ? String.format("%s.%s", day, month) :
+                String.format("%s %s", day, monthLong);
     }
 }

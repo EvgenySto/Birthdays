@@ -10,12 +10,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import sto.evgeny.birthdays.application.ComponentHolder;
 import sto.evgeny.birthdays.model.ContactData;
+import sto.evgeny.birthdays.service.ContactDataService;
 
 public class DataFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context context;
     private Intent intent;
     private List<Map<String, String>> data;
+    @Inject
+    public ContactDataService contactDataService;
 
     public DataFactory(Context context, Intent intent) {
         this.context = context;
@@ -24,13 +30,14 @@ public class DataFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onCreate() {
         data = new ArrayList<>();
+        ((ComponentHolder) context.getApplicationContext()).getApplicationComponent().inject(this);
     }
 
     @Override
     public void onDataSetChanged() {
         data.clear();
 
-        for (ContactData contactData : ContactDataProvider.getData(context).subList(0, 3)) {
+        for (ContactData contactData : contactDataService.getData(context.getContentResolver()).subList(0, 3)) {
             Map<String, String> item = new HashMap<>();
             item.put("id", contactData.getId());
             item.put("name", contactData.getName());
