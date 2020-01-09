@@ -23,7 +23,6 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.core.AllOf.allOf;
@@ -41,79 +40,56 @@ public class MainActivityTest {
 
     @Test
     public void mainActivityTest() {
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep();
 
-        ViewInteraction linearLayout = onView(
-                allOf(withId(R.id.notificationsWrapper),
-                        childAtPosition(
-                                allOf(withId(R.id.settingsFragment),
-                                        childAtPosition(
-                                                withId(R.id.mainContainer),
-                                                4)),
-                                1),
-                        isDisplayed()));
-        linearLayout.perform(click());
-
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction actionMenuItemView = onView(
-                allOf(withId(R.id.action_about), withContentDescription("О приложении"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.action_bar),
-                                        1),
-                                0),
-                        isDisplayed()));
+        ViewInteraction actionMenuItemView = onView(withId(R.id.action_about));
         actionMenuItemView.perform(click());
 
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep();
 
         ViewInteraction appCompatImageButton = onView(
-                allOf(withContentDescription("Перейти вверх"),
-                        childAtPosition(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.action_bar),
+                                childAtPosition(
+                                        withId(R.id.action_bar_container),
+                                        0)),
+                        1),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        sleep();
+
+        ViewInteraction actionMenuItemView1 = onView(withId(R.id.action_settings));
+        actionMenuItemView1.perform(click());
+
+        sleep();
+
+        ViewInteraction actionMenuItemView2 = onView(withId(R.id.notificationSwitch));
+        actionMenuItemView2.perform(click());
+
+        sleep();
+
+        ViewInteraction appCompatImageButton1 = onView(
+                allOf(childAtPosition(
                                 allOf(withId(R.id.action_bar),
                                         childAtPosition(
                                                 withId(R.id.action_bar_container),
                                                 0)),
                                 1),
                         isDisplayed()));
-        appCompatImageButton.perform(click());
+        appCompatImageButton1.perform(click());
 
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep();
 
         DataInteraction linearLayout2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.contactsListViewShort),
-                        childAtPosition(
-                                withId(R.id.mainContainer),
-                                3)))
+                .inAdapterView(withId(R.id.contactsListViewShort))
                 .atPosition(0);
         linearLayout2.perform(click());
 
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep();
 
         ViewInteraction appCompatImageButton2 = onView(
-                allOf(withContentDescription("Перейти вверх"),
-                        childAtPosition(
+                allOf(childAtPosition(
                                 allOf(withId(R.id.action_bar),
                                         childAtPosition(
                                                 withId(R.id.action_bar_container),
@@ -140,5 +116,13 @@ public class MainActivityTest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

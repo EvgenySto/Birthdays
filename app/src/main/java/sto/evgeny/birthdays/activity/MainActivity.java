@@ -105,11 +105,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         this.menu = menu;
@@ -121,13 +116,20 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_about:
-                Intent intent = new Intent(this, AboutActivity.class);
-                startActivity(intent);
+                startActivityByClass(AboutActivity.class);
+                break;
+            case R.id.action_settings:
+                startActivityByClass(SettingsActivity.class);
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startActivityByClass(Class clazz) {
+        Intent intent = new Intent(this, clazz);
+        startActivity(intent);
     }
 
     @Override
