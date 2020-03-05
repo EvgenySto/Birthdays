@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "sto.evgeny.birthdays"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 26
         testInstrumentationRunner 'sto.evgeny.birthdays.runner.AndroidTestRunner'
     }
